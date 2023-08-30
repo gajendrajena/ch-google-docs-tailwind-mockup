@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <title>Content Harmony Workflow</title>
+  <script> (function getConversations() { })(); </script>
+  <link href="./../dist/output.css" rel="stylesheet">
+  <link href="./custom.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/gajendrajena/flesch-kincaid/flesch-kincaid-es5-v2.min.js" defer></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="app.js"></script>
+</head>
+
+<body>
+  <div class="sidebar h-screen p-2 pb-12">
+    <div x-data="grader" class="h-100" data-frame="view" x-init="preloadGrader()">
+      <div id='errorContainer'></div>
+
+      <ul class="max-w-md space-y-2 text-gray-500 list-inside dark:text-gray-400 p-3 m-3" x-show='display.loader'>
+        <li class="flex items-center">
+          <div role="status">
+            <svg aria-hidden="true" class="w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+              viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor" />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill" />
+            </svg>
+            <span class="sr-only">Loading...</span>
+          </div>
+          Loading...
+        </li>
+      </ul>
+
+      <div x-data="graderHeader" class="pb-3" id='graderHeader' x-show="display.graderHeader">
+        <div class="mb-2 label text-xs uppercase font-semibold">Content Workflow</div>
+        <div class="flex text-xs">
+          <div class="w-full text-break" id="graderUrl">
+            <a x-bind:href="graderHeader.graderPath" target='_blank'
+              class="link-primary btn-external link-underline-opacity-0 link-underline-opacity-100-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4 float-left mr-1">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+              <span id="keyword_brief" x-text="keyword_brief"></span>
+            </a>
+            <button class="float-right" id="unlinkGrader" title="Disconnect this workflow." @click="toggleForm">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4 stroke-red-500 border border-red-400">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="my-3" id='formContainer' x-show="display.form">
+        <h5 class="mb-4 mt-2 font-semibold text-xs uppercase">Connect a Content Workflow</h5>
+        <p class="mb-2 text-xs">Paste in a publicly-shared Content Harmony URL to connect it to this Google Doc.</p>
+        <p class="mb-2 text-xs"><strong>Example URL:</strong></p>
+        <div class="my-3 text-xs max-w-prose break-words">
+          https://app.contentharmony.com/l/<strong>849963da00ab70618a31c441dbe7c59e</strong>/grader</div>
+        <p class="mb-3 text-xs">We'll import the Topic Model and Content Grader recommendations so you can optimize your
+          content without leaving this page.</p>
+        <form action="/" accept-charset="UTF-8" method="get">
+          <div class="mb-3 text-xs">
+            <label for="report_url" class="font-semibold">Publicly-shared Grader URL:</label>
+            <textarea placeholder="Publicly-shared Grader URL" class="w-full mt-3 p-1" rows='3' id="report_url"
+              x-model="graderHeader.graderPath"></textarea>
+          </div>
+        </form>
+        <button class="w-full bg-blue-700 hover:bg-blue-500 text-white rounded p-1 text-sm" id='connect-to-grader'
+          @click="fetchGrader"><span class="mr-1">⚡️</span> <span>Connect To Content Workflow</span></button>
+      </div>
+
+      <div x-show="display.contentScore">
+        <div class="el-tablo mb-3" id='graderScoreContainer'>
+          <div class="mb-1 label text-xs uppercase font-semibold" data-bs-toggle="tooltip"
+            data-bs-title="Score based upon percent of suggestions used.">
+            Content Score <i class="fa fa-info-circle" aria-hidden="true"></i>
+          </div>
+          <div class="text-md" x-bind:class="contentScore.score.color" x-text="contentScore.score.label"></div>
+          <div class="small text-xs mt-1">
+            <span x-text="contentScore.topicsUsed"></span>/<span x-text="contentScore.recommendedTermsTotal"></span>
+            Phrases Used
+          </div>
+          <div class="flex mx-0 mt-2">
+            <div class="w-full px-0 py-2">
+              <div class="progress w-100 content-score-progress-bar  bg-neutral-200">
+                <div class="progress-marker start-marker" x-bind:class="contentScore.markers.start"></div>
+                <div class="progress-marker fair-marker" x-bind:class="contentScore.markers.fair"></div>
+                <div class="progress-marker good-marker" x-bind:class="contentScore.markers.good"></div>
+                <div class="progress-marker great-marker" x-bind:class="contentScore.markers.great"></div>
+                <div class="progress-marker greatest-marker" x-bind:class="contentScore.markers.greatest"></div>
+                <div class="progress-marker end-marker" x-bind:class="contentScore.markers.end"></div>
+                <div class="block h-1" x-bind:class="contentScore.score.color" role="progressbar"
+                  x-bind:style="`width: ${contentScore.score.score}%`"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex">
+          <div class="w-1/2">
+            <div class="bg-neutral-100 p-2 rounded mr-1">
+              <div class="mb-1 label text-xs uppercase font-semibold" data-bs-toggle="tooltip"
+                data-bs-title="Recommended Word Count">
+                Word Count <i class="fa fa-info-circle" aria-hidden="true"></i>
+              </div>
+              <div class="text-blue-600 text-md" x-text="contentScore.currentWordCount"></div>
+              <div class="small text-xs mt-1">
+                <span x-text="contentScore.recommended_word_count"></span> Average
+              </div>
+            </div>
+          </div>
+          <div class="w-1/2">
+            <div class="bg-neutral-100 p-2 rounded ml-1">
+              <div class="mb-1 label text-xs uppercase font-semibold" data-bs-toggle="tooltip"
+                data-bs-title="Readability Level.">
+                Readability <i class="fa fa-info-circle" aria-hidden="true"></i>
+              </div>
+              <div class="text-blue-600 text-md" id="flesch_kincaid_score_grade"
+                x-text="contentScore.readability.current">-</div>
+              <div class="small text-xs mt-1">
+                <span id="readability_average" data-label="0" x-text="contentScore.readability.recomended"> - </span>
+                Average
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div x-data='recommendations' class="recommendations my-3 text-xs" id="recommendations"
+        x-show="display.recommendations">
+        <div class="mb-2 label text-xs uppercase font-semibold">Recommendations:</div>
+        <!-- phraseHighlighting checkbox via tailwind -->
+        <label x-data="phraseHighlighting" class="relative inline-flex items-center my-2 cursor-pointer">
+          <input type="checkbox" x-bind:value="phraseHighlighting" x-bind:checked="phraseHighlighting"
+            class="sr-only peer" @click="toggleHighlight">
+          <div
+            class="w-11 h-5 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+          </div>
+          <span class="ml-2 font-medium text-gray-900 dark:text-gray-300 uppercase font-semibold">Phrase
+            Highlighting</span>
+        </label>
+
+        <div class="w-100 flex mt-2 mb-4">
+          <span class="w-1/3 uppercase font-semibold">Sort By:</span>
+          <span class="w-1/3 inline-block relative text-md">
+            <select name="sortBy" x-model="sortBy" x-data="{options: ['Priority', 'Used']}" x-on:change="sortByHandler">
+              <template x-for="option in options" :key="option">
+                <option :value="option" x-text="option" :selected="option === sortBy"></option>
+              </template>
+            </select>
+          </span>
+        </div>
+
+        <div class="recommendationHeader flex my-1">
+          <div class="w-1/2 header">
+            <span class="align-text-top" id='phrase'>Phrase</span>
+            <span class="text-small align-text-top">(Variants)</span>
+          </div>
+          <div class="w-1/2 text-right header">Used times</span>-<span class="text-xs">Average</span></div>
+        </div>
+        <div class='overflow-y-scroll semi-full-h-vh' id="recommendationsContainer">
+          <template x-for="topic in topics">
+            <div class="recommendation py-1 pr-4 text-xs mb-1">
+              <div class="recommendation-box flex">
+                <div class="w-1/12">
+                  <div class="d-block term" :class="topic.count == 0 ? 'term-unused' : 'term-used'"></div>
+                </div>
+                <div class="w-11/12 os-progress-bar primary float-start">
+                  <div class="bar-labels flex">
+                    <div class="w-9/12 bar-label-left ">
+                      <span class="align-text-top" id='phrase' x-text="topic.p"></span>
+                      <span class="text-xs text-small align-text-top variants" id="variants"
+                        x-text="`${topic.v.length > 0 ? '(' + topic.v.join(', ') + ')' : ''}`"></span>
+                    </div>
+                    <div class="w-3/12 bar-label-right text-right">
+                      <span class="info align-text-top">
+                        <span id="term_used" x-text="topic.count"></span> - <span class="text-xs ml-3"><span
+                            x-text="topic.x"></span>x</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="bar-level-1 full-width">
+                    <div class="block h-0.5 bg-blue-700" x-bind:style="`width: ${topic.pr}%;`"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar bottom bg-blue-900 w-full py-3">
+    <img alt="Content Harmony" class="logo pl-1 h-6"
+      src="https://www.contentharmony.com/assets/images/content-harmony-logo-white.png?v=98c8709d8f">
+  </div>
+</body>
+
+</html>
