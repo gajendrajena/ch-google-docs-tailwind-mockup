@@ -1,0 +1,22 @@
+{
+  "name": "ch-google-docs-ad-on",
+  "version": "1.0.0",
+  "description": "ch-google-docs-ad-on tailwind css",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gajendrajena/ch-google-docs-tailwind-mockup.git"
+  },
+  "keywords": [
+    "ch-google-docs-ad-on"
+  ],
+  "author": "Gajendra Jena",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gajendrajena/ch-google-docs-tailwind-mockup/issues"
+  },
+  "homepage": "https://github.com/gajendrajena/ch-google-docs-tailwind-mockup#readme"
+}
